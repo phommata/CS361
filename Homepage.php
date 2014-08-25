@@ -1,97 +1,94 @@
 <?php
-//Turn on error reporting
-ini_set('display_errors', 'On');
-//Connects to the database
-$mysqli = new mysqli("oniddb.cws.oregonstate.edu","phommata-db","Lm0QgLxFUbJHtq2D","phommata-db");
-if($mysqli->connect_errno){
-	echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
-	}
+// 	session_start();
+	//Turn on error reporting
+	ini_set('display_errors', 'On');
+	//Connects to the database
+	$mysqli = new mysqli("oniddb.cws.oregonstate.edu","phommata-db","Lm0QgLxFUbJHtq2D","phommata-db");
+	if($mysqli->connect_errno){
+		echo "Connection error " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+		}
 ?>
-
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
+	<link rel="stylesheet" href="stylesheets/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="stylesheets/bootstrap/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="stylesheets/bootstrap/css/docs.min.css">
 <body>
-<div>
-	Battlestar People</br></br>
-</div>
-<div>
+<div class="container">
+	<h1 class="pageHeader">User's Homepage</br></br></h1>
 	<table>
 		<tr>
-<!-- 			<td>Battlestar People</td> -->
+			<td>Job Name</td>
+			<td>Job Emp</td>
+			<td>Job Desc</td>
+			<td>Job Pay</td>
+			<td>Skill Name</td>
 		</tr>
-		<tr>
-			<td>Name</td>
-			<td>Age</td>
-			<td>Homeworld</td>
-		</tr>
-<div>
-	<form method="post" action="filter.php">
-		<fieldset>
-			<legend>Filter By Planet</legend>
-				<select name="Homeworld">
-					<?php
-					if(!($stmt = $mysqli->prepare("SELECT id, name FROM bsg_planets"))){
-						echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
-					}
+		<div>
+			<form method="post" action="homepageFilter.php">
+				<fieldset>
+					<legend>Job Listings</legend>
+						<select name="Homepage">
+							<?php
+								if(!($stmt = $mysqli->prepare("SELECT j.job_id, j.job_name, j.job_emp, j.job_desc, j.job_pay, s.skill_id, s.skill_name 
+																FROM job j 
+																INNER JOIN job_skills js ON j.job_id = js.job_id
+																INNER JOIN skills s ON js.skill_id = s.skill_id
+																INNER JOIN user_skills us ON s.skill_id = us.skill_id
+																INNER JOIN usr_db u ON us.user_id = u.user_id
+																GROUP BY s.skill_name"))){
+									echo "Prepare failed: " . $stmt->errno . " " . $stmt->error;
+								}
 
-					if(!$stmt->execute()){
-						echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
-					}
-					if(!$stmt->bind_result($id, $pname)){
-						echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
-					}
-					while($stmt->fetch()){
-					 echo '<option value=" '. $id . ' "> ' . $pname . '</option>\n';
-					}
-					$stmt->close();
-					?>
-				</select>
-		</fieldset>
-		<input type="submit" value="Run Filter" />
-	</form>
-</div>
+								if(!$stmt->execute()){
+									echo "Execute failed: " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+								}
+								if(!$stmt->bind_result($job_id, $job_name, $job_emp, $job_desc, $job_pay, $skill_id, $skill_name)){
+									echo "Bind failed: " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+								}
+								while($stmt->fetch()){
+									echo '<option value=" '. $skill_id . ' "> ' . $skill_name . '</option>\n';
+								}
+								$stmt->close();									
+							?>
+						</select>
+				</fieldset>
+				<input type="submit" value="Run Search" />
+			</form>
+		</div>
 		
-<?php
-if(!($stmt = $mysqli->prepare("SELECT bsg_people.fname, bsg_people.age, bsg_planets.name FROM bsg_people INNER JOIN bsg_planets ON bsg_people.homeworld = bsg_planets.id"))){
-	echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
-}
+		<?php
+			$username = "sampleuser1";
+			$_SESSION['username'] = "sampleuser1";
+			if(!($stmt = $mysqli->prepare("SELECT j.job_name, j.job_emp, j.job_desc, j.job_pay, s.skill_name 
+											FROM job j 
+											INNER JOIN job_skills js ON j.job_id = js.job_id
+											INNER JOIN skills s ON js.skill_id = s.skill_id
+											INNER JOIN user_skills us ON s.skill_id = us.skill_id
+											INNER JOIN usr_db u ON us.user_id = u.user_id
+											WHERE u.username = ?
+											GROUP BY j.job_id"))){
+				echo "Prepare failed: " . $stmt->errno . " " . $stmt->error;
+			}
+			
+			$stmt->bind_param("s", $_SESSION['username']);
 
-if(!$stmt->execute()){
-	echo "Execute failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
-}
-if(!$stmt->bind_result($name, $age, $homeworld)){
-	echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
-}
-while($stmt->fetch()){
- echo "<tr>\n<td>\n" . $name . "\n</td>\n<td>\n" . $age . "\n</td>\n<td>\n" . $homeworld . "\n</td>\n</tr>";
-}
-$stmt->close();
-?>
+			if(!$stmt->execute()){
+				echo "Execute failed: " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+			}
+			if(!$stmt->bind_result($job_name, $job_emp, $job_desc, $job_pay, $skill_name)){
+				echo "Bind failed: " . $mysqli->connect_errno . " " . $mysqli->connect_error;
+			}
+			while($stmt->fetch()){
+				echo "<tr>\n<td>\n" . $job_name . "\n</td>\n<td>\n" . $job_emp . "\n</td>\n<td>\n" 
+									. $job_desc . "\n</td>\n<td>\n" . $job_pay . "\n</td>\n<td>\n"
+									. $skill_name . "\n</td>\n</tr>";
+			}
+			$stmt->close();
+		?>
 	</table>
 </div>
-
-<!-- 
-<div>
-	<form method="post" action="Homepage.html">
-		<fieldset>
-			<legend>Planet Name</legend>
-			<p>Planet Name: <input type="text" name="PName" /></p>
-		</fieldset>
-		<fieldset>
-			<legend>Planet Populations</legend>
-			<p>Planet Population: <input type="text" name="PPopulation" /></p>
-		</fieldset>
-		<fieldset>
-			<legend>Laguage</legend>
-			<p>Official Language: <input type="text" name="PLanguage" /></p>
-		</fieldset>
-		<input type="submit" name="add" value="Add Planet" />
-		<input type="submit" name="update" value="Update Planet" />
-	</form>
-</div>
- -->
-
 </body>
 </html>
