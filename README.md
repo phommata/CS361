@@ -1,6 +1,5 @@
-CS361
+CS361 Software Engineering I
 =====
-
-Software Engineering I
-=======
+homepage.php
+homepageFilter.php
 
