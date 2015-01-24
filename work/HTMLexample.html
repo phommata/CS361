@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- 
+    <title>My first web page</title>
+ -->
+</head>
+<body>
+<table>
+	<tr>
+		<td>Battlestar People</td>
+	</tr>
+	<tr>
+		<td>Name</td>
+		<td>Age</td>		
+		<td>Homeworld</td>
+	</tr>
+	<tr>
+		<td>Kara Thrase</td>
+		<td>30</td>
+		<td><a href="caprica.html">Caprica</a></td><!--Update this later-->
+<!-- 		<td><a href="planets/caprica.html">Caprica</a></td><!~~Update this later~~>		 -->
+<!-- 		<td><a href="planet.php?id=1">Caprica</a></td>		 -->
+	</tr>	
+</table>
+<div>
+	<form method ="post" action="HTMLexample.html"> <!--Change this later-->
+		<fieldset>
+			<legend>Name</legend>
+			<p>First Name: <input type="text" name="FirstName"/></p>
+			<p>Last Name: <input type="text" name="LastName"/></p>		
+		</fieldset>
+		<fieldset>
+			<legend>Age</legend>
+			<p>Age: <input type="text" name="Age"/></p>
+		</fieldset>		
+		<fieldset>
+			<legend>Homeworld</legend>
+			<select>
+				<option value ="1">Caprica</option>
+				<option value ="2">Gemenon</option>
+			</select>			
+		</fieldset>
+	<p><input type="submit"/></p>	
+	</form>
+</div>
+<div>
+	<form method="post" action="HTMLexample.html">
+		<fieldset>
+			<legend>Planet Name</legend>
+			<p>Planet Name: <input type="text" name="PName"/></p>
+		</fieldset>		
+		<fieldset>
+			<legend>Planet Population</legend>
+			<p>Planet Population: <input type="text" name="PPopulation"/></p>
+		</fieldset>		
+		<fieldset>
+			<legend>Language</legend>
+			<p>Official Language: <input type="text" name="PLanguage"/></p>
+		</fieldset>
+		<input type="submit" name="add" value="Add Planet"/>		
+		<input type="submit" name="update" value="Update Planet"/>				
+	</form>			
+</div>
+</body>
+</html>
