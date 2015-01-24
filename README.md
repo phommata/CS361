@@ -1,4 +1,4 @@
-CS 361 Software Engineering I
+CS 361 - Software Engineering I
 =====
 
 <h3>Eliminating Economic Boundaries</h3>
